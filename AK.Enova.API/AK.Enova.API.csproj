@@ -3,26 +3,37 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0-windows</TargetFramework>
 
+		<!-- NuGet -->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
-		<Authors>TwojaFirma</Authors>
-		<Company>TwojaFirma</Company>
-
 		<PackageId>AK.Enova.API</PackageId>
 		<Version>1.0.0</Version>
+		<Authors>Artur Kunicki</Authors>
+		<Company>AK</Company>
+		<Description>Base API infrastructure for Comarch Enova ERP</Description>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
+		<!-- GitHub -->
+		<RepositoryUrl>https://github.com/arturkunicki/AK.Enova.API</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+
+		<!-- build -->
 		<Nullable>disable</Nullable>
 		<ImplicitUsings>false</ImplicitUsings>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Soneta.Start" Version="2512.1.1" />
+		<!-- bootstrap enovy -->
+		<PackageReference Include="Soneta.Start"
+						  Version="2512.1.1" />
+
+		<!-- moduły (tylko compile-time) -->
 		<PackageReference Include="Soneta.Products.Modules"
 						  Version="2512.1.1"
 						  PrivateAssets="all"
 						  ExcludeAssets="runtime" />
-		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 
+		<!-- potrzebne dla ControllerBase -->
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
 </Project>
