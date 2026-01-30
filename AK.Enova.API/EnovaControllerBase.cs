@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Soneta.Business;
+using System;
 
 namespace AK.Enova.API
 {
     [ApiController]
-    public abstract class EnovaControllerBase : ControllerBase
+    public abstract class EnovaControllerBase : ControllerBase, IDisposable
     {
         private readonly EnovaSessionScope _scope;
 
@@ -15,12 +16,10 @@ namespace AK.Enova.API
             _scope = new EnovaSessionScope(service);
         }
 
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
-            if (disposing)
-                _scope.Dispose();
+            _scope.Dispose();
 
-            base.Dispose(disposing);
         }
     }
 }
