@@ -1,0 +1,32 @@
+name: publish-nuget
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build -c Release
+
+    - name: Pack
+      run: dotnet pack -c Release --no-build
+
+    - name: Push
+      run: dotnet nuget push "**/*.nupkg" `
+           --source "https://nuget.pkg.github.com/fr3kz/index.json" `
+           --api-key ${{ secrets.GITHUB_TOKEN }}
