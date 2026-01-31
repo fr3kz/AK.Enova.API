@@ -11,7 +11,7 @@ namespace AK.Enova.API
 {
     public class EnovaService
     {
-        public Session Session { get; }
+        public Session Session { get; set; }
 
         public EnovaService(EnovaConnectionOptions options)
         {
@@ -23,6 +23,8 @@ namespace AK.Enova.API
 
             Session = login.CreateSession(false, true,"API");
         }
+
+
     }
 
 }

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace AK.Enova.API.Auth
 {
-    public static class SimpleTokenService
+    public class LoginRequest
     {
-        public static string Generate()
-            => Guid.NewGuid().ToString("N");
+        public string AccessToken { get; set; } = string.Empty;
     }
 }

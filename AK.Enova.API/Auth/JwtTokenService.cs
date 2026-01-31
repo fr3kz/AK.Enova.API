@@ -1,65 +1,68 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Claims;
+using System.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
+using SymmetricSecurityKey = System.IdentityModel.Tokens.SymmetricSecurityKey;
 
 namespace AK.Enova.API.Auth
 {
-    public class JwtTokenService
+    public static class JwtTokenService
     {
-        private const string Secret = "AABBCC";
+        private static readonly string Secret =
+        "AK_ENOVA_SUPER_SECRET_2026_CHANGE_THIS_TO_64_CHARS_MINIMUM";
 
-        public string Generate(string database)
+        public static string Generate(string database, string accessToken)
         {
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(Secret));
+            var handler = new JwtSecurityTokenHandler();
 
-            var creds = new SigningCredentials(
-                key,
-                SecurityAlgorithms.HmacSha256);
+            var key = Encoding.UTF8.GetBytes(Secret);
 
-            var token = new JwtSecurityToken(
-                claims: new[]
+            var token = handler.CreateToken(new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
                 {
-                    new System.Security.Claims.Claim("database", database,ClaimValueTypes.String)
-                },
-                expires: DateTime.UtcNow.AddHours(8),
-                signingCredentials: creds);
+                new Claim("db", database),
+                new Claim("access", accessToken)
+            }),
+                Expires = DateTime.UtcNow.AddMinutes(30),
+                SigningCredentials = new SigningCredentials(
+                    new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256)
+            });
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return handler.WriteToken(token);
         }
 
-        public static bool Validate(string token)
+        public static ClaimsPrincipal? Validate(string token)
         {
+            var handler = new JwtSecurityTokenHandler();
+
             try
             {
-                var handler = new JwtSecurityTokenHandler();
-                var key = Encoding.UTF8.GetBytes(Secret);
-
-                handler.ValidateToken(token,
+                var principal = handler.ValidateToken(
+                    token,
                     new TokenValidationParameters
                     {
                         ValidateIssuer = false,
                         ValidateAudience = false,
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey =
-                            new SymmetricSecurityKey(key),
+                               new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+                                Encoding.UTF8.GetBytes(Secret)),
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.Zero
                     },
                     out _);
 
-                return true;
+                return principal;
             }
             catch
             {
-                return false;
+                return null;
             }
-        }
-    }
+        
+         }
+}
 }

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,53 +10,58 @@ using System.Threading.Tasks;
 
 namespace AK.Enova.API.Auth
 {
-    using Microsoft.Extensions.Options;
-
-    public class EnovaAuthMiddleware
+    public sealed class EnovaJwtMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly EnovaConnectionOptions _settings;
 
-        public EnovaAuthMiddleware(
-            RequestDelegate next,
-            IOptions<EnovaConnectionOptions> settings)
+        public EnovaJwtMiddleware(RequestDelegate next)
         {
             _next = next;
-            _settings = settings.Value;
         }
 
-        public async Task Invoke(HttpContext ctx)
+        public async Task InvokeAsync(
+            HttpContext context,
+            IOptions<EnovaConnectionOptions> options)
         {
-            if (_settings.AuthType == EnovaAuthType.None)
+            var opt = options.Value;
+
+            if (opt.AuthType == EnovaAuthType.None)
             {
-                await _next(ctx);
+                await _next(context);
                 return;
             }
 
-            var token = ctx.Request.Headers["Authorization"]
-                .FirstOrDefault()
-                ?.Replace("Bearer ", "");
-
-            if (string.IsNullOrEmpty(token))
+            if (context.Request.Path.StartsWithSegments("/api/auth"))
             {
-                ctx.Response.StatusCode = 401;
-                await ctx.Response.WriteAsync("Missing token");
+                await _next(context);
                 return;
             }
 
-            bool valid =
-                _settings.AuthType == EnovaAuthType.Simple
-                    ? EnovaTokenStore.Validate(token)
-                    : JwtTokenService.Validate(token);
-
-            if (!valid)
+            if (!context.Request.Headers.TryGetValue("Authorization", out var auth))
             {
-                ctx.Response.StatusCode = 401;
-                await ctx.Response.WriteAsync("Invalid token");
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 return;
             }
 
-            await _next(ctx);
+            var header = auth.ToString();
+
+            if (!header.StartsWith("Bearer "))
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return;
+            }
+
+            var token = header.Substring("Bearer ".Length);
+
+            var principal = JwtTokenService.Validate(token);
+
+            if (principal == null)
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return;
+            }
+
+            await _next(context);
         }
     }
 

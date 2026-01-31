@@ -11,33 +11,18 @@ using System;
 namespace AK.Enova.API
 {
     [ApiController]
-    public abstract class EnovaControllerBase : ControllerBase, IDisposable
+    [ServiceFilter(typeof(EnovaSessionFilter))]
+    public abstract class EnovaControllerBase : ControllerBase
     {
-        private readonly EnovaSessionScope _scope;
+        protected Session Session =>
+            HttpContext.Items["ENOVA_SESSION"] as Session
+            ?? throw new Exception("Brak sesji Enovy");
 
-        protected Session Session => _scope.Session;
-
-        protected KadryModule KadryModule => _scope.Session.GetKadry();
-
-        protected HandelModule HandelModule => _scope.Session.GetHandel();
-
-        protected BusinessModule BusinessModule => _scope.Session.GetBusiness();    
-
-        protected CRMModule CRMModule => _scope.Session.GetCRM();   
-
-        protected SrodkiTrwaleModule SrodkiTrwaleModule => _scope.Session.GetSrodkiTrwale();    
-
-        protected CoreModule CoreModule => _scope.Session.GetCore();
-
-        protected EnovaControllerBase(EnovaService service)
-        {
-            _scope = new EnovaSessionScope(service);
-        }
-
-        public void Dispose()
-        {
-            _scope.Dispose();
-
-        }
+        protected KadryModule KadryModule => Session.GetKadry();
+        protected HandelModule HandelModule => Session.GetHandel();
+        protected BusinessModule BusinessModule => Session.GetBusiness();
+        protected CRMModule CRMModule => Session.GetCRM();
+        protected SrodkiTrwaleModule SrodkiTrwaleModule => Session.GetSrodkiTrwale();
+        protected CoreModule CoreModule => Session.GetCore();
     }
 }

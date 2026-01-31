@@ -6,14 +6,14 @@
 		<!-- NuGet -->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>AK.Enova.API</PackageId>
-		<Version>1.0.3</Version>
+		<Version>1.0.2</Version>
 		<Authors>Artur Kunicki</Authors>
 		<Company>AK</Company>
 		<Description>REST API Framework for Soneta Enova365</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
 		<!-- GitHub -->
-		<RepositoryUrl>https://github.com/fr3kz/AK.Enova.API</RepositoryUrl>
+		<RepositoryUrl>https://github.com/arturkunicki/AK.Enova.API</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 
 		<!-- build -->
