@@ -13,7 +13,6 @@ public sealed class EnovaSessionScope : IDisposable
     public EnovaSessionScope(EnovaService service)
     {
         Monitor.Enter(_lock);
-
         Session = service.Session;
         _transaction = Session.Logout(true);
     }

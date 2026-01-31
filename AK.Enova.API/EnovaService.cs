@@ -13,15 +13,15 @@ namespace AK.Enova.API
     {
         public Session Session { get; }
 
-        public EnovaService(string database)
+        public EnovaService(EnovaConnectionOptions options)
         {
             SessionState.ResetAttaching();
             SessionState.Create().Attach();
 
-            var db = BusApplication.Instance[database];
-            var login = db.Login(false, "Administrator", "");
+            var db = BusApplication.Instance[options.Database];
+            var login = db.Login(false, options.User, options.Password);
 
-            Session = login.CreateSession(false, true);
+            Session = login.CreateSession(false, true,"API");
         }
     }
 
