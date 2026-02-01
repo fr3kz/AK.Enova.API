@@ -23,14 +23,17 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build -c Release --no-restore
+      run: dotnet build AK.Enova.API/AK.Enova.API.csproj -c Release --no-restore
 
     - name: Test
-      run: dotnet test -c Release --no-build
+      run: dotnet test AK.Enova.API/AK.Enova.API.csproj -c Release --no-build
       continue-on-error: true
 
     - name: Pack
-      run: dotnet pack -c Release --no-build -o ./nupkg
+      run: dotnet pack AK.Enova.API/AK.Enova.API.csproj -c Release --no-build -o nupkg
+
+    - name: Show packages
+      run: Get-ChildItem -Recurse -Filter *.nupkg
 
     - name: Publish to NuGet
       run: dotnet nuget push nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
