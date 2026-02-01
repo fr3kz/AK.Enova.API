@@ -30,3 +30,41 @@ app.UseEnovaApi();
 
 ## Token generator
 Aby go użyć przekopiowujemy plik .exe w to samo miejsce gdzie najduje się baza danych (to samo miejsce skąd jest odpalany plik .exe)
+
+## Przykladowy kontroler API
+``csharp
+  public class TestController : EnovaControllerBase
+  {
+      public TestController(EnovaService enova)
+         
+      {
+      }
+
+      [HttpGet]
+      public string Test()
+      {
+          return
+              $"Operator: {Session.Login.OperatorName} | " +
+              $"Baza: {Session.Login.Database.Name}";
+      }
+
+      [HttpPost]
+      public string TestPost([FromBody] TestRequest request)
+      {
+          
+          using(var t = Session.Logout(true))
+          {
+              var kth = new Kontrahent();
+              t.Session.AddRow(kth);
+              kth.Nazwa = $"{request.Imie} {request.Nazwisko}";
+              t.Commit();
+            
+          }
+
+          Session.Save();
+
+          return $"OK";
+      
+      }
+  }
+  ```
