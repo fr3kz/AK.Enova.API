@@ -8,3 +8,6 @@
 /WebApplication1/WebApplication1/bin/Debug/net8.0-windows
 *.user
 /WebApplication1/.vs
+/TokenGenerator/.vs
+/TokenGenerator/TokenGenerator/bin/Debug/net8.0
+/TokenGenerator/TokenGenerator/obj
