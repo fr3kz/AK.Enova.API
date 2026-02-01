@@ -32,7 +32,7 @@ app.UseEnovaApi();
 Aby go użyć przekopiowujemy plik .exe w to samo miejsce gdzie najduje się baza danych (to samo miejsce skąd jest odpalany plik .exe)
 
 ## Przykladowy kontroler API
-``csharp
+```csharp
   public class TestController : EnovaControllerBase
   {
       public TestController(EnovaService enova)
