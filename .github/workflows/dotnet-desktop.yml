@@ -33,7 +33,14 @@ jobs:
       run: dotnet pack AK.Enova.API/AK.Enova.API.csproj -c Release --no-build -o nupkg
 
     - name: Show packages
-      run: Get-ChildItem -Recurse -Filter *.nupkg
+      run: Get-ChildItem nupkg
 
     - name: Publish to NuGet
-      run: dotnet nuget push nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      shell: pwsh
+      run: |
+        foreach ($pkg in Get-ChildItem nupkg/*.nupkg) {
+          dotnet nuget push $pkg.FullName `
+            --api-key ${{ secrets.NUGET_API_KEY }} `
+            --source https://api.nuget.org/v3/index.json `
+            --skip-duplicate
+        }
