@@ -6,7 +6,7 @@
 		<!-- NuGet -->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>AK.Enova.API</PackageId>
-		<Version>1.0.3</Version>
+		<Version>1.0.4</Version>
 		<Authors>Artur Kunicki</Authors>
 		<Company>AK</Company>
 		<Description>REST API Framework for Soneta Enova365</Description>
