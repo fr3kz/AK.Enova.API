@@ -26,3 +26,7 @@ builder.Services.AddEnovaApi(builder.Configuration);
 var app = builder.Build();
 
 app.UseEnovaApi();
+```
+
+## Token generator
+Aby go użyć przekopiowujemy plik .exe w to samo miejsce gdzie najduje się baza danych (to samo miejsce skąd jest odpalany plik .exe)
