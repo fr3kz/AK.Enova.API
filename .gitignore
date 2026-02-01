@@ -5,3 +5,6 @@
 /.vs/AK.Enova.API.slnx
 /AK.Enova.API/obj
 /.vs
+/WebApplication1/WebApplication1/bin/Debug/net8.0-windows
+*.user
+/WebApplication1/.vs
